@@ -16,8 +16,8 @@ Date: 2026-03-16
 | Command IDs                     | `markdown-preview-enhanced.<cmd>`                                      | `i2max-markdown-preview.<cmd>`                               |
 | Configuration keys              | `markdown-preview-enhanced.<key>`                                      | `i2max-markdown-preview.<key>`                               |
 | Config namespace in `config.ts` | `markdown-preview-enhanced`                                            | `i2max-markdown-preview`                                     |
-| `repository` URL                | `https://github.com/shd101wyy/vscode-markdown-preview-enhanced`        | `https://internal.example.com/i2max-markdown-preview`        |
-| `bugs` URL                      | `https://github.com/shd101wyy/vscode-markdown-preview-enhanced/issues` | `https://internal.example.com/i2max-markdown-preview/issues` |
+| `repository` URL                | `https://github.com/shd101wyy/vscode-markdown-preview-enhanced`        | `https://github.com/iAkhadjon/i2max-markdown-preview`        |
+| `bugs` URL                      | `https://github.com/shd101wyy/vscode-markdown-preview-enhanced/issues` | `https://github.com/iAkhadjon/i2max-markdown-preview/issues` |
 | NLS keys                        | `markdown-preview-enhanced.*`                                          | `i2max-markdown-preview.*`                                   |
 | NLS display strings             | `"Markdown Preview Enhanced"`                                          | `"i2max Markdown Preview"`                                   |
 

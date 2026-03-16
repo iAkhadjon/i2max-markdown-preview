@@ -10,9 +10,9 @@
     "markdown"
   ],
   "bugs": {
-    "url": "https://internal.example.com/i2max-markdown-preview/issues"
+    "url": "https://github.com/iAkhadjon/i2max-markdown-preview/issues"
   },
-  "repository": "https://internal.example.com/i2max-markdown-preview",
+  "repository": "https://github.com/iAkhadjon/i2max-markdown-preview",
   "license": "NCSA",
   "contributors": [
     "Park Shin"
@@ -32,7 +32,7 @@
     "run-in-vscode-dev": "npx serve --cors -l 5000 --ssl-cert $HOME/certs/localhost.pem --ssl-key $HOME/certs/localhost-key.pem",
     "test": "npm run build && node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "npm install && npm run build",
-    "package": "npx vsce package --no-dependencies --allow-missing-repository --baseContentUrl https://internal.example.com/i2max-markdown-preview --baseImagesUrl https://internal.example.com/i2max-markdown-preview",
+    "package": "npx vsce package --no-dependencies --allow-missing-repository --baseContentUrl https://github.com/iAkhadjon/i2max-markdown-preview --baseImagesUrl https://github.com/iAkhadjon/i2max-markdown-preview",
     "watch": "gulp copy-files && gulp clean-out && node build.js --watch"
   },
   "contributes": {

@@ -17,7 +17,7 @@ Date: 2026-03-16
 ## 1. Get the source
 
 ```bash
-git clone https://internal.example.com/i2max-markdown-preview.git
+git clone https://github.com/iAkhadjon/i2max-markdown-preview.git
 cd i2max-markdown-preview
 ```
 

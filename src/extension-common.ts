@@ -56,13 +56,7 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
     });
   }
 
-  async function webviewFinishLoading({
-    uri,
-    systemColorScheme,
-  }: {
-    uri: string;
-    systemColorScheme: 'light' | 'dark';
-  }) {
+  async function webviewFinishLoading({ uri, systemColorScheme }: { uri: string; systemColorScheme: 'light' | 'dark' }) {
     const sourceUri = vscode.Uri.parse(uri);
     const previewProvider = await getPreviewContentProvider(sourceUri);
     notebooksManager.setSystemColorScheme(systemColorScheme);
@@ -77,17 +71,11 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
   function insertImageUrl(uri: string, imageUrl: string) {
     const sourceUri = vscode.Uri.parse(uri);
     vscode.window.visibleTextEditors
-      .filter(
-        editor =>
-          isMarkdownFile(editor.document) && editor.document.uri.fsPath === sourceUri.fsPath,
-      )
+      .filter(editor => isMarkdownFile(editor.document) && editor.document.uri.fsPath === sourceUri.fsPath)
       .forEach(editor => {
         // const line = editor.selection.active.line
         editor.edit(textEditorEdit => {
-          textEditorEdit.insert(
-            editor.selection.active,
-            `![enter image description here](${imageUrl})`,
-          );
+          textEditorEdit.insert(editor.selection.active, `![enter image description here](${imageUrl})`);
         });
       });
   }
@@ -154,13 +142,7 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
           } else {
             line = line.replace(/\[[xX]\]/, '[ ]');
           }
-          edit.replace(
-            new vscode.Range(
-              new vscode.Position(dataLine, 0),
-              new vscode.Position(dataLine, line.length),
-            ),
-            line,
-          );
+          edit.replace(new vscode.Range(new vscode.Position(dataLine, 0), new vscode.Position(dataLine, line.length)), line);
         });
         break;
       }
@@ -191,14 +173,9 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
       .replace(/^file\/\/\//, '${scheme}:///')
       .replace(/^https:\/\/file\+\.vscode-resource.vscode-cdn.net\//, `${scheme}:///`)
       .replace(/^https:\/\/.+\.vscode-cdn.net\//, `${scheme}:///`)
-      .replace(
-        /^https?:\/\/(.+?)\.vscode-webview-test.com\/vscode-resource\/file\/+/,
-        `${scheme}:///`,
-      )
+      .replace(/^https?:\/\/(.+?)\.vscode-webview-test.com\/vscode-resource\/file\/+/, `${scheme}:///`)
       .replace(/^https?:\/\/file(.+?)\.vscode-webview\.net\/+/, `${scheme}:///`);
-    if (
-      ['.pdf', '.xls', '.xlsx', '.doc', '.ppt', '.docx', '.pptx'].indexOf(path.extname(href)) >= 0
-    ) {
+    if (['.pdf', '.xls', '.xlsx', '.doc', '.ppt', '.docx', '.pptx'].indexOf(path.extname(href)) >= 0) {
       try {
         utility.openFile(href);
       } catch (error) {
@@ -330,22 +307,22 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
   }
 
   async function openChangelog() {
-    const url = 'https://github.com/shd101wyy/vscode-i2max-markdown-preview/releases';
+    const url = 'https://github.com/iAkhadjon/i2max-markdown-preview/releases';
     return vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
   async function openDocumentation() {
-    const url = 'https://shd101wyy.github.io/i2max-markdown-preview/';
+    const url = 'https://github.com/iAkhadjon/i2max-markdown-preview#readme';
     return vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
   async function openIssues() {
-    const url = 'https://github.com/shd101wyy/vscode-i2max-markdown-preview/issues';
+    const url = 'https://github.com/iAkhadjon/i2max-markdown-preview/issues';
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
   async function openSponsors() {
-    const url = 'https://github.com/sponsors/shd101wyy/';
+    const url = 'https://github.com/iAkhadjon/i2max-markdown-preview/discussions';
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
@@ -415,9 +392,7 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
         const relativePath = path.relative(workspaceDir, document.uri.fsPath);
         if (
           relativePath.startsWith('.crossnote') &&
-          ['style.less', 'config.js', 'parser.js', 'head.html'].includes(
-            path.basename(relativePath),
-          )
+          ['style.less', 'config.js', 'parser.js', 'head.html'].includes(path.basename(relativePath))
         ) {
           const provider = await getPreviewContentProvider(document.uri);
           await notebooksManager.updateNotebookConfig(workspaceUri);
@@ -442,9 +417,7 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
         const relativePath = path.relative(workspaceDir, file.fsPath);
         if (
           relativePath.startsWith('.crossnote') &&
-          ['style.less', 'config.js', 'parser.js', 'head.html'].includes(
-            path.basename(relativePath),
-          )
+          ['style.less', 'config.js', 'parser.js', 'head.html'].includes(path.basename(relativePath))
         ) {
           const provider = await getPreviewContentProvider(file);
           await notebooksManager.updateNotebookConfig(workspaceUri);
@@ -486,16 +459,12 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
         const firstVisibleScreenRow = getTopVisibleLine(event.textEditor);
         const lastVisibleScreenRow = getBottomVisibleLine(event.textEditor);
 
-        if (
-          typeof firstVisibleScreenRow === 'undefined' ||
-          typeof lastVisibleScreenRow === 'undefined'
-        ) {
+        if (typeof firstVisibleScreenRow === 'undefined' || typeof lastVisibleScreenRow === 'undefined') {
           return;
         }
 
         const topRatio =
-          (event.selections[0].active.line - firstVisibleScreenRow) /
-          (lastVisibleScreenRow - firstVisibleScreenRow);
+          (event.selections[0].active.line - firstVisibleScreenRow) / (lastVisibleScreenRow - firstVisibleScreenRow);
 
         const previewProvider = await getPreviewContentProvider(event.textEditor.document.uri);
         previewProvider.postMessageToPreview(event.textEditor.document.uri, {
@@ -573,18 +542,13 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
            */
           const previewProvider = await getPreviewContentProvider(sourceUri);
           if (previewProvider.isPreviewOn(sourceUri)) {
-            if (
-              previewMode === PreviewMode.SinglePreview &&
-              !previewProvider.previewHasTheSameSingleSourceUri(sourceUri)
-            ) {
+            if (previewMode === PreviewMode.SinglePreview && !previewProvider.previewHasTheSameSingleSourceUri(sourceUri)) {
               previewProvider.initPreview({
                 sourceUri,
                 document: editor.document,
                 cursorLine: getEditorActiveCursorLine(editor),
                 viewOptions: {
-                  viewColumn:
-                    previewProvider.getPreviews(sourceUri)?.at(0)?.viewColumn ??
-                    vscode.ViewColumn.One,
+                  viewColumn: previewProvider.getPreviews(sourceUri)?.at(0)?.viewColumn ?? vscode.ViewColumn.One,
                   preserveFocus: true,
                 },
               });
@@ -606,10 +570,7 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
   // Changed editor color theme
   context.subscriptions.push(
     vscode.window.onDidChangeActiveColorTheme(theme => {
-      if (
-        getMPEConfig<PreviewColorScheme>('previewColorScheme') ===
-        PreviewColorScheme.editorColorScheme
-      ) {
+      if (getMPEConfig<PreviewColorScheme>('previewColorScheme') === PreviewColorScheme.editorColorScheme) {
         notebooksManager.updateAllNotebooksConfig();
       }
     }),
@@ -630,112 +591,63 @@ export async function initExtensionCommon(context: vscode.ExtensionContext) {
   */
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'i2max-markdown-preview.openPreviewToTheSide',
-      openPreviewToTheSide,
-    ),
+    vscode.commands.registerCommand('i2max-markdown-preview.openPreviewToTheSide', openPreviewToTheSide),
   );
 
   context.subscriptions.push(vscode.commands.registerCommand('_crossnote.revealLine', revealLine));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.insertImageUrl', insertImageUrl),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.insertImageUrl', insertImageUrl));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.refreshPreview', refreshPreview),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.refreshPreview', refreshPreview));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.openInBrowser', openInBrowser),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openInBrowser', openInBrowser));
 
   context.subscriptions.push(vscode.commands.registerCommand('_crossnote.htmlExport', htmlExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.chromeExport', chromeExport),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.chromeExport', chromeExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.princeExport', princeExport),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.princeExport', princeExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.eBookExport', eBookExport),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.eBookExport', eBookExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.pandocExport', pandocExport),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.pandocExport', pandocExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.markdownExport', markdownExport),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.markdownExport', markdownExport));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.webviewFinishLoading', webviewFinishLoading),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.webviewFinishLoading', webviewFinishLoading));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.clickTaskListCheckbox', clickTaskListCheckbox),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.clickTaskListCheckbox', clickTaskListCheckbox));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.setPreviewTheme', setPreviewTheme),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.setPreviewTheme', setPreviewTheme));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.togglePreviewZenMode', togglePreviewZenMode),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.togglePreviewZenMode', togglePreviewZenMode));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.setCodeBlockTheme', setCodeBlockTheme),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.setCodeBlockTheme', setCodeBlockTheme));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.setRevealjsTheme', setRevealjsTheme),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.setRevealjsTheme', setRevealjsTheme));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.openChangelog', openChangelog),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openChangelog', openChangelog));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.openDocumentation', openDocumentation),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openDocumentation', openDocumentation));
 
   context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openIssues', openIssues));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.openSponsors', openSponsors),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openSponsors', openSponsors));
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.openExternalEditor', openExternalEditor),
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.openExternalEditor', openExternalEditor));
 
   context.subscriptions.push(vscode.commands.registerCommand('_crossnote.clickTagA', clickTagA));
 
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.showBacklinks', showBacklinks));
+
+  context.subscriptions.push(vscode.commands.registerCommand('_crossnote.updateMarkdown', updateMarkdown));
+
   context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.showBacklinks', showBacklinks),
+    vscode.commands.registerCommand('_crossnote.toggleAlwaysShowBacklinksInPreview', toggleAlwaysShowBacklinksInPreview),
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('_crossnote.updateMarkdown', updateMarkdown),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      '_crossnote.toggleAlwaysShowBacklinksInPreview',
-      toggleAlwaysShowBacklinksInPreview,
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.window.registerCustomEditorProvider(
-      'i2max-markdown-preview',
-      new PreviewCustomEditorProvider(context),
-    ),
+    vscode.window.registerCustomEditorProvider('i2max-markdown-preview', new PreviewCustomEditorProvider(context)),
   );
 }
 
@@ -743,19 +655,14 @@ function revealLine(uri, line) {
   const sourceUri = vscode.Uri.parse(uri);
 
   vscode.window.visibleTextEditors
-    .filter(
-      editor => isMarkdownFile(editor.document) && editor.document.uri.fsPath === sourceUri.fsPath,
-    )
+    .filter(editor => isMarkdownFile(editor.document) && editor.document.uri.fsPath === sourceUri.fsPath)
     .forEach(editor => {
       const sourceLine = Math.min(Math.floor(line), editor.document.lineCount - 1);
       const fraction = line - sourceLine;
       const text = editor.document.lineAt(sourceLine).text;
       const start = Math.floor(fraction * text.length);
       editorScrollDelay = Date.now() + 500;
-      editor.revealRange(
-        new vscode.Range(sourceLine, start, sourceLine + 1, 0),
-        vscode.TextEditorRevealType.InCenter,
-      );
+      editor.revealRange(new vscode.Range(sourceLine, start, sourceLine + 1, 0), vscode.TextEditorRevealType.InCenter);
       editorScrollDelay = Date.now() + 500;
     });
 }
