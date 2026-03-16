@@ -115,154 +115,83 @@ export class MarkdownPreviewEnhancedConfig implements NotebookConfig {
   private constructor() {
     const defaultConfig = getDefaultNotebookConfig();
 
-    this.markdownFileExtensions =
-      getMPEConfig<string[]>('markdownFileExtensions') ??
-      defaultConfig.markdownFileExtensions;
+    this.markdownFileExtensions = getMPEConfig<string[]>('markdownFileExtensions') ?? defaultConfig.markdownFileExtensions;
     this.configPath = getMPEConfig<string>('configPath') ?? '';
     this.usePandocParser = isVSCodeWebExtension()
       ? false // pandoc is not supported in web extension
-      : getMPEConfig<boolean>('usePandocParser') ??
-        defaultConfig.usePandocParser;
-    this.breakOnSingleNewLine =
-      getMPEConfig<boolean>('breakOnSingleNewLine') ??
-      defaultConfig.breakOnSingleNewLine;
-    this.enableTypographer =
-      getMPEConfig<boolean>('enableTypographer') ??
-      defaultConfig.enableTypographer;
-    this.enableWikiLinkSyntax =
-      getMPEConfig<boolean>('enableWikiLinkSyntax') ??
-      defaultConfig.enableWikiLinkSyntax;
-    this.enableLinkify =
-      getMPEConfig<boolean>('enableLinkify') ?? defaultConfig.enableLinkify;
-    this.useGitHubStylePipedLink =
-      getMPEConfig<boolean>('useGitHubStylePipedLink') ??
-      defaultConfig.useGitHubStylePipedLink;
-    this.enableEmojiSyntax =
-      getMPEConfig<boolean>('enableEmojiSyntax') ??
-      defaultConfig.enableEmojiSyntax;
+      : getMPEConfig<boolean>('usePandocParser') ?? defaultConfig.usePandocParser;
+    this.breakOnSingleNewLine = getMPEConfig<boolean>('breakOnSingleNewLine') ?? defaultConfig.breakOnSingleNewLine;
+    this.enableTypographer = getMPEConfig<boolean>('enableTypographer') ?? defaultConfig.enableTypographer;
+    this.enableWikiLinkSyntax = getMPEConfig<boolean>('enableWikiLinkSyntax') ?? defaultConfig.enableWikiLinkSyntax;
+    this.enableLinkify = getMPEConfig<boolean>('enableLinkify') ?? defaultConfig.enableLinkify;
+    this.useGitHubStylePipedLink = getMPEConfig<boolean>('useGitHubStylePipedLink') ?? defaultConfig.useGitHubStylePipedLink;
+    this.enableEmojiSyntax = getMPEConfig<boolean>('enableEmojiSyntax') ?? defaultConfig.enableEmojiSyntax;
     this.enableExtendedTableSyntax =
-      getMPEConfig<boolean>('enableExtendedTableSyntax') ??
-      defaultConfig.enableExtendedTableSyntax;
+      getMPEConfig<boolean>('enableExtendedTableSyntax') ?? defaultConfig.enableExtendedTableSyntax;
     this.enableCriticMarkupSyntax =
-      getMPEConfig<boolean>('enableCriticMarkupSyntax') ??
-      defaultConfig.enableCriticMarkupSyntax;
+      getMPEConfig<boolean>('enableCriticMarkupSyntax') ?? defaultConfig.enableCriticMarkupSyntax;
     this.frontMatterRenderingOption =
-      getMPEConfig<FrontMatterRenderingOption>('frontMatterRenderingOption') ??
-      defaultConfig.frontMatterRenderingOption;
-    this.mermaidTheme =
-      getMPEConfig<MermaidTheme>('mermaidTheme') ?? defaultConfig.mermaidTheme;
+      getMPEConfig<FrontMatterRenderingOption>('frontMatterRenderingOption') ?? defaultConfig.frontMatterRenderingOption;
+    this.mermaidTheme = getMPEConfig<MermaidTheme>('mermaidTheme') ?? defaultConfig.mermaidTheme;
     this.mathRenderingOption =
-      (getMPEConfig<string>('mathRenderingOption') as MathRenderingOption) ??
-      defaultConfig.mathRenderingOption;
-    this.mathInlineDelimiters =
-      getMPEConfig<string[][]>('mathInlineDelimiters') ??
-      defaultConfig.mathInlineDelimiters;
-    this.mathBlockDelimiters =
-      getMPEConfig<string[][]>('mathBlockDelimiters') ??
-      defaultConfig.mathBlockDelimiters;
+      (getMPEConfig<string>('mathRenderingOption') as MathRenderingOption) ?? defaultConfig.mathRenderingOption;
+    this.mathInlineDelimiters = getMPEConfig<string[][]>('mathInlineDelimiters') ?? defaultConfig.mathInlineDelimiters;
+    this.mathBlockDelimiters = getMPEConfig<string[][]>('mathBlockDelimiters') ?? defaultConfig.mathBlockDelimiters;
     this.mathRenderingOnlineService =
-      getMPEConfig<string>('mathRenderingOnlineService') ??
-      defaultConfig.mathRenderingOnlineService;
-    this.mathjaxV3ScriptSrc =
-      getMPEConfig<string>('mathjaxV3ScriptSrc') ??
-      defaultConfig.mathjaxV3ScriptSrc;
-    this.codeBlockTheme =
-      getMPEConfig<CodeBlockTheme>('codeBlockTheme') ??
-      defaultConfig.codeBlockTheme;
-    this.previewTheme =
-      getMPEConfig<PreviewTheme>('previewTheme') ?? defaultConfig.previewTheme;
-    this.revealjsTheme =
-      getMPEConfig<RevealJsTheme>('revealjsTheme') ??
-      defaultConfig.revealjsTheme;
-    this.protocolsWhiteList =
-      getMPEConfig<string>('protocolsWhiteList') ??
-      defaultConfig.protocolsWhiteList;
-    this.imageFolderPath =
-      getMPEConfig<string>('imageFolderPath') ?? defaultConfig.imageFolderPath;
+      getMPEConfig<string>('mathRenderingOnlineService') ?? defaultConfig.mathRenderingOnlineService;
+    this.mathjaxV3ScriptSrc = getMPEConfig<string>('mathjaxV3ScriptSrc') ?? defaultConfig.mathjaxV3ScriptSrc;
+    this.codeBlockTheme = getMPEConfig<CodeBlockTheme>('codeBlockTheme') ?? defaultConfig.codeBlockTheme;
+    this.previewTheme = getMPEConfig<PreviewTheme>('previewTheme') ?? defaultConfig.previewTheme;
+    this.revealjsTheme = getMPEConfig<RevealJsTheme>('revealjsTheme') ?? defaultConfig.revealjsTheme;
+    this.protocolsWhiteList = getMPEConfig<string>('protocolsWhiteList') ?? defaultConfig.protocolsWhiteList;
+    this.imageFolderPath = getMPEConfig<string>('imageFolderPath') ?? defaultConfig.imageFolderPath;
     // Security hardening: do not silently fall back to a cloud uploader.
-    this.imageUploader =
-      getMPEConfig<ImageUploader>('imageUploader') ?? 'imgur';
-    this.printBackground =
-      getMPEConfig<boolean>('printBackground') ?? defaultConfig.printBackground;
-    this.chromePath =
-      getMPEConfig<string>('chromePath') ?? defaultConfig.chromePath;
-    this.imageMagickPath =
-      getMPEConfig<string>('imageMagickPath') ?? defaultConfig.imageMagickPath;
-    this.pandocPath =
-      getMPEConfig<string>('pandocPath') ?? defaultConfig.pandocPath;
-    this.pandocMarkdownFlavor =
-      getMPEConfig<string>('pandocMarkdownFlavor') ??
-      defaultConfig.pandocMarkdownFlavor;
-    this.pandocArguments =
-      getMPEConfig<string[]>('pandocArguments') ??
-      defaultConfig.pandocArguments;
-    this.latexEngine =
-      getMPEConfig<string>('latexEngine') ?? defaultConfig.latexEngine;
+    this.imageUploader = getMPEConfig<ImageUploader>('imageUploader') ?? 'imgur';
+    this.printBackground = getMPEConfig<boolean>('printBackground') ?? defaultConfig.printBackground;
+    this.chromePath = getMPEConfig<string>('chromePath') ?? defaultConfig.chromePath;
+    this.imageMagickPath = getMPEConfig<string>('imageMagickPath') ?? defaultConfig.imageMagickPath;
+    this.pandocPath = getMPEConfig<string>('pandocPath') ?? defaultConfig.pandocPath;
+    this.pandocMarkdownFlavor = getMPEConfig<string>('pandocMarkdownFlavor') ?? defaultConfig.pandocMarkdownFlavor;
+    this.pandocArguments = getMPEConfig<string[]>('pandocArguments') ?? defaultConfig.pandocArguments;
+    this.latexEngine = getMPEConfig<string>('latexEngine') ?? defaultConfig.latexEngine;
     // Security hardening: default to false regardless of upstream library default.
     // Users must explicitly opt-in via settings.
-    this.enableScriptExecution =
-      getMPEConfig<boolean>('enableScriptExecution') ?? false;
+    this.enableScriptExecution = getMPEConfig<boolean>('enableScriptExecution') ?? false;
 
     this.scrollSync = getMPEConfig<boolean>('scrollSync') ?? true;
     this.liveUpdate = getMPEConfig<boolean>('liveUpdate') ?? true;
-    this.liveUpdateDebounceMs =
-      getMPEConfig<number>('liveUpdateDebounceMs') ?? 300;
-    this.previewMode =
-      getMPEConfig<PreviewMode>('previewMode') ?? PreviewMode.SinglePreview;
+    this.liveUpdateDebounceMs = getMPEConfig<number>('liveUpdateDebounceMs') ?? 300;
+    this.previewMode = getMPEConfig<PreviewMode>('previewMode') ?? PreviewMode.SinglePreview;
     this.automaticallyShowPreviewOfMarkdownBeingEdited =
-      getMPEConfig<boolean>('automaticallyShowPreviewOfMarkdownBeingEdited') ??
-      false;
+      getMPEConfig<boolean>('automaticallyShowPreviewOfMarkdownBeingEdited') ?? false;
     this.previewColorScheme =
-      getMPEConfig<PreviewColorScheme>('previewColorScheme') ??
-      PreviewColorScheme.selectedPreviewTheme;
-    this.enableHTML5Embed =
-      getMPEConfig<boolean>('enableHTML5Embed') ??
-      defaultConfig.enableHTML5Embed;
+      getMPEConfig<PreviewColorScheme>('previewColorScheme') ?? PreviewColorScheme.selectedPreviewTheme;
+    this.enableHTML5Embed = getMPEConfig<boolean>('enableHTML5Embed') ?? defaultConfig.enableHTML5Embed;
     this.HTML5EmbedUseImageSyntax =
-      getMPEConfig<boolean>('HTML5EmbedUseImageSyntax') ??
-      defaultConfig.HTML5EmbedUseImageSyntax;
-    this.HTML5EmbedUseLinkSyntax =
-      getMPEConfig<boolean>('HTML5EmbedUseLinkSyntax') ??
-      defaultConfig.HTML5EmbedUseLinkSyntax;
-    this.HTML5EmbedIsAllowedHttp =
-      getMPEConfig<boolean>('HTML5EmbedIsAllowedHttp') ??
-      defaultConfig.HTML5EmbedIsAllowedHttp;
+      getMPEConfig<boolean>('HTML5EmbedUseImageSyntax') ?? defaultConfig.HTML5EmbedUseImageSyntax;
+    this.HTML5EmbedUseLinkSyntax = getMPEConfig<boolean>('HTML5EmbedUseLinkSyntax') ?? defaultConfig.HTML5EmbedUseLinkSyntax;
+    this.HTML5EmbedIsAllowedHttp = getMPEConfig<boolean>('HTML5EmbedIsAllowedHttp') ?? defaultConfig.HTML5EmbedIsAllowedHttp;
     this.HTML5EmbedAudioAttributes =
-      getMPEConfig<string>('HTML5EmbedAudioAttributes') ??
-      defaultConfig.HTML5EmbedAudioAttributes;
+      getMPEConfig<string>('HTML5EmbedAudioAttributes') ?? defaultConfig.HTML5EmbedAudioAttributes;
     this.HTML5EmbedVideoAttributes =
-      getMPEConfig<string>('HTML5EmbedVideoAttributes') ??
-      defaultConfig.HTML5EmbedVideoAttributes;
-    this.puppeteerWaitForTimeout =
-      getMPEConfig<number>('puppeteerWaitForTimeout') ??
-      defaultConfig.puppeteerWaitForTimeout;
-    this.puppeteerArgs =
-      getMPEConfig<string[]>('puppeteerArgs') ?? defaultConfig.puppeteerArgs;
-    this.plantumlJarPath =
-      getMPEConfig<string>('plantumlJarPath') ?? defaultConfig.plantumlJarPath;
-    this.plantumlServer =
-      getMPEConfig<string>('plantumlServer') ?? defaultConfig.plantumlServer;
+      getMPEConfig<string>('HTML5EmbedVideoAttributes') ?? defaultConfig.HTML5EmbedVideoAttributes;
+    this.puppeteerWaitForTimeout = getMPEConfig<number>('puppeteerWaitForTimeout') ?? defaultConfig.puppeteerWaitForTimeout;
+    this.puppeteerArgs = getMPEConfig<string[]>('puppeteerArgs') ?? defaultConfig.puppeteerArgs;
+    this.plantumlJarPath = getMPEConfig<string>('plantumlJarPath') ?? defaultConfig.plantumlJarPath;
+    this.plantumlServer = getMPEConfig<string>('plantumlServer') ?? defaultConfig.plantumlServer;
     // Security hardening: do NOT auto-assign external kroki.io server.
     // External servers may receive confidential document content.
-    this.hideDefaultVSCodeMarkdownPreviewButtons =
-      getMPEConfig<boolean>('hideDefaultVSCodeMarkdownPreviewButtons') ?? true;
-    this.jsdelivrCdnHost =
-      getMPEConfig<string>('jsdelivrCdnHost') ?? defaultConfig.jsdelivrCdnHost;
-    this.krokiServer =
-      getMPEConfig<string>('krokiServer') ?? defaultConfig.krokiServer;
+    this.hideDefaultVSCodeMarkdownPreviewButtons = getMPEConfig<boolean>('hideDefaultVSCodeMarkdownPreviewButtons') ?? true;
+    this.jsdelivrCdnHost = getMPEConfig<string>('jsdelivrCdnHost') ?? defaultConfig.jsdelivrCdnHost;
+    this.krokiServer = getMPEConfig<string>('krokiServer') ?? defaultConfig.krokiServer;
     this.alwaysShowBacklinksInPreview =
-      getMPEConfig<boolean>('alwaysShowBacklinksInPreview') ??
-      defaultConfig.alwaysShowBacklinksInPreview;
-    this.enablePreviewZenMode =
-      getMPEConfig<boolean>('enablePreviewZenMode') ??
-      defaultConfig.enablePreviewZenMode;
+      getMPEConfig<boolean>('alwaysShowBacklinksInPreview') ?? defaultConfig.alwaysShowBacklinksInPreview;
+    this.enablePreviewZenMode = getMPEConfig<boolean>('enablePreviewZenMode') ?? defaultConfig.enablePreviewZenMode;
     this.wikiLinkTargetFileExtension =
-      getMPEConfig<string>('wikiLinkTargetFileExtension') ??
-      defaultConfig.wikiLinkTargetFileExtension;
+      getMPEConfig<string>('wikiLinkTargetFileExtension') ?? defaultConfig.wikiLinkTargetFileExtension;
     this.wikiLinkTargetFileNameChangeCase =
-      getMPEConfig<WikiLinkTargetFileNameChangeCase>(
-        'wikiLinkTargetFileNameChangeCase',
-      ) ?? defaultConfig.wikiLinkTargetFileNameChangeCase;
+      getMPEConfig<WikiLinkTargetFileNameChangeCase>('wikiLinkTargetFileNameChangeCase') ??
+      defaultConfig.wikiLinkTargetFileNameChangeCase;
   }
 
   public isEqualTo(otherConfig: MarkdownPreviewEnhancedConfig) {
