@@ -1,6 +1,6 @@
 # Security Review — i2max Markdown Preview
 
-Extension: `i2max-markdown-preview` v0.8.20  
+Extension: `i2max-markdown-preview` v1.0.0  
 Date: 2026-03-16  
 Based on: `shd101wyy/vscode-markdown-preview-enhanced` (upstream)
 
@@ -10,93 +10,93 @@ Based on: `shd101wyy/vscode-markdown-preview-enhanced` (upstream)
 
 ### HIGH — Code Chunk Execution (`enableScriptExecution`)
 
-| | |
-|---|---|
-| **File** | `src/config.ts`, `src/preview-provider.ts` |
-| **Risk** | Allows arbitrary shell commands and scripts to be embedded in Markdown and executed on the host machine. A malicious `.md` file can run any command the user can run. |
-| **Status** | **MITIGATED** — `enableScriptExecution` is now hard-coded to `false` in `config.ts`. The fallback is `false`, not the upstream library default. The setting still exists so sophisticated users can opt-in but it is disabled by default. |
-| **Remaining risk** | Users who explicitly enable this setting in VS Code workspace settings will still be able to execute code chunks. Only trusted users should be allowed to change this setting. |
+|                    |                                                                                                                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**           | `src/config.ts`, `src/preview-provider.ts`                                                                                                                                                                                                |
+| **Risk**           | Allows arbitrary shell commands and scripts to be embedded in Markdown and executed on the host machine. A malicious `.md` file can run any command the user can run.                                                                     |
+| **Status**         | **MITIGATED** — `enableScriptExecution` is now hard-coded to `false` in `config.ts`. The fallback is `false`, not the upstream library default. The setting still exists so sophisticated users can opt-in but it is disabled by default. |
+| **Remaining risk** | Users who explicitly enable this setting in VS Code workspace settings will still be able to execute code chunks. Only trusted users should be allowed to change this setting.                                                            |
 
 ---
 
 ### HIGH — Image Upload to External Cloud Services
 
-| | |
-|---|---|
-| **Files** | `src/image-helper.ts`, `src/config.ts` |
-| **Risk** | The image helper supports uploading images (including screenshots of private content) to external cloud storage: Imgur, Qiniu (Chinese cloud). This can exfiltrate confidential document content. |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Files**  | `src/image-helper.ts`, `src/config.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Risk**   | The image helper supports uploading images (including screenshots of private content) to external cloud storage: Imgur, Qiniu (Chinese cloud). This can exfiltrate confidential document content.                                                                                                                                                                                                                                                                                                                                                           |
 | **Status** | **RESOLVED** — `openImageHelper`, `showUploadedImages`, `_crossnote.pasteImageFile`, `_crossnote.uploadImageFile`, `_crossnote.showUploadedImageHistory`, and `_crossnote.setImageUploader` commands have been removed from both `package.json` and the source files. All Qiniu settings (`qiniuAccessKey`, `qiniuSecretKey`, `qiniuBucket`, `qiniuDomain`), `imageUploader`, and `imageFolderPath` settings have been removed from `package.json`. Import of `pasteImageFile`/`uploadImageFile` from `image-helper.ts` removed from `extension-common.ts`. |
 
 ---
 
 ### HIGH — Webviews use `enableScripts: true` without restrictive CSP
 
-| | |
-|---|---|
-| **File** | `src/preview-provider.ts` lines 348, 361 |
-| **Risk** | Both the regular preview and the custom editor preview enable JavaScript in the webview with no Content Security Policy (CSP) restricting script sources. This means any XSS payload embedded in a rendered Markdown file could execute arbitrary JavaScript in the webview context. A webview in VS Code cannot directly access the filesystem, but it can send messages to the extension host. |
-| **Status** | **PARTIALLY MITIGATED** — The crossnote rendering library manages its own webview HTML. A CSP nonce was not added because the webview HTML is generated by the `crossnote` npm package, which would require patching the library. The webview is sandboxed by VS Code (no Node.js access) but inline script execution is allowed. |
-| **Remaining risk** | Scripts in the webview cannot call Node.js APIs directly but can post messages to the extension host. Any malicious `window.postMessage` handler could trigger commands in the extension host. Audit `onMessage` handlers in `preview-provider.ts`. |
+|                    |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **File**           | `src/preview-provider.ts` lines 348, 361                                                                                                                                                                                                                                                                                                                                                         |
+| **Risk**           | Both the regular preview and the custom editor preview enable JavaScript in the webview with no Content Security Policy (CSP) restricting script sources. This means any XSS payload embedded in a rendered Markdown file could execute arbitrary JavaScript in the webview context. A webview in VS Code cannot directly access the filesystem, but it can send messages to the extension host. |
+| **Status**         | **PARTIALLY MITIGATED** — The crossnote rendering library manages its own webview HTML. A CSP nonce was not added because the webview HTML is generated by the `crossnote` npm package, which would require patching the library. The webview is sandboxed by VS Code (no Node.js access) but inline script execution is allowed.                                                                |
+| **Remaining risk** | Scripts in the webview cannot call Node.js APIs directly but can post messages to the extension host. Any malicious `window.postMessage` handler could trigger commands in the extension host. Audit `onMessage` handlers in `preview-provider.ts`.                                                                                                                                              |
 
 ---
 
 ### MEDIUM — External PlantUML Server / Kroki Server Network Calls
 
-| | |
-|---|---|
-| **File** | `src/config.ts` |
-| **Risk** | If `plantumlServer` or `krokiServer` settings pointed to an external service, diagram source code (which may contain confidential architecture/data) would be sent to the external server. The original code auto-assigned `https://kroki.io/plantuml/svg/` when running in the web extension mode. |
-| **Status** | **MITIGATED** — Auto-assignment of `https://kroki.io/plantuml/svg/` removed from `config.ts`. Default for both settings is empty string (local rendering only). Setting descriptions warn against using external servers with confidential documents. |
+|            |                                                                                                                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**   | `src/config.ts`                                                                                                                                                                                                                                                                                     |
+| **Risk**   | If `plantumlServer` or `krokiServer` settings pointed to an external service, diagram source code (which may contain confidential architecture/data) would be sent to the external server. The original code auto-assigned `https://kroki.io/plantuml/svg/` when running in the web extension mode. |
+| **Status** | **MITIGATED** — Auto-assignment of `https://kroki.io/plantuml/svg/` removed from `config.ts`. Default for both settings is empty string (local rendering only). Setting descriptions warn against using external servers with confidential documents.                                               |
 
 ---
 
 ### MEDIUM — jsDelivr CDN Dependency (Web Mode)
 
-| | |
-|---|---|
-| **File** | `src/preview-provider.ts` |
-| **Risk** | In the web extension mode the `crossnote` build directory is loaded from a jsDelivr CDN URL, which increases supply-chain risk (CDN compromise or DNS poisoning). |
-| **Status** | **PARTIALLY MITIGATED** — The `jsdelivrCdnHost` setting now defaults to empty string. However, web extension mode still uses the CDN path when running in `vscode.dev`. For purely internal desktop VS Code use, the native mode (`out/native/extension.js`) loads `crossnote` from the bundled local copy — no CDN calls are made. |
-| **Remaining risk** | Web/browser-based VS Code use (`vscode.dev`) still relies on CDN for `crossnote` assets unless a self-hosted CDN mirror is configured. **Recommendation: disable the web extension mode entirely** by removing the `"browser"` entry from `package.json` if the team only uses desktop VS Code. |
+|                    |                                                                                                                                                                                                                                                                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**           | `src/preview-provider.ts`                                                                                                                                                                                                                                                                                                           |
+| **Risk**           | In the web extension mode the `crossnote` build directory is loaded from a jsDelivr CDN URL, which increases supply-chain risk (CDN compromise or DNS poisoning).                                                                                                                                                                   |
+| **Status**         | **PARTIALLY MITIGATED** — The `jsdelivrCdnHost` setting now defaults to empty string. However, web extension mode still uses the CDN path when running in `vscode.dev`. For purely internal desktop VS Code use, the native mode (`out/native/extension.js`) loads `crossnote` from the bundled local copy — no CDN calls are made. |
+| **Remaining risk** | Web/browser-based VS Code use (`vscode.dev`) still relies on CDN for `crossnote` assets unless a self-hosted CDN mirror is configured. **Recommendation: disable the web extension mode entirely** by removing the `"browser"` entry from `package.json` if the team only uses desktop VS Code.                                     |
 
 ---
 
 ### MEDIUM — MathJax CDN Default
 
-| | |
-|---|---|
-| **Risk** | The original default `mathjaxV3ScriptSrc` pointed to `https://cdn.jsdelivr.net/npm/mathjax@3/...`. This would cause a network request every time a document with math is rendered. |
-| **Status** | **MITIGATED** — Default changed to empty string, which causes the extension to use the locally bundled version. |
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Risk**   | The original default `mathjaxV3ScriptSrc` pointed to `https://cdn.jsdelivr.net/npm/mathjax@3/...`. This would cause a network request every time a document with math is rendered. |
+| **Status** | **MITIGATED** — Default changed to empty string, which causes the extension to use the locally bundled version.                                                                    |
 
 ---
 
 ### LOW — Pandoc Shell Integration
 
-| | |
-|---|---|
-| **File** | `src/preview-provider.ts` (pandocExport), `src/config.ts` |
-| **Risk** | Export via Pandoc spawns a child process. If `pandocPath` is set to a malicious binary or modified via workspace settings, arbitrary code can execute. |
-| **Status** | **PARTIALLY MITIGATED** — `usePandocParser` defaults to `false`. The pandoc export command is still registered but will fail gracefully if pandoc is not installed. |
+|                    |                                                                                                                                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**           | `src/preview-provider.ts` (pandocExport), `src/config.ts`                                                                                                                                                             |
+| **Risk**           | Export via Pandoc spawns a child process. If `pandocPath` is set to a malicious binary or modified via workspace settings, arbitrary code can execute.                                                                |
+| **Status**         | **PARTIALLY MITIGATED** — `usePandocParser` defaults to `false`. The pandoc export command is still registered but will fail gracefully if pandoc is not installed.                                                   |
 | **Remaining risk** | If pandoc is installed and a user enables `usePandocParser`, document content is passed to the pandoc process. The arguments are read from user settings — ensure only trusted users can configure `pandocArguments`. |
 
 ---
 
 ### LOW — Unsafe URI Protocol Allowlist (`protocolsWhiteList`)
 
-| | |
-|---|---|
-| **Risk** | The `protocolsWhiteList` setting controls which URI schemes are passed through as hyperlinks. The default included `atom://` (leftover from Atom editor). |
-| **Status** | **RESOLVED** — `atom://` removed from the default list. Default is now `"http://, https://, file://, mailto:, tel:"`. |
+|            |                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Risk**   | The `protocolsWhiteList` setting controls which URI schemes are passed through as hyperlinks. The default included `atom://` (leftover from Atom editor). |
+| **Status** | **RESOLVED** — `atom://` removed from the default list. Default is now `"http://, https://, file://, mailto:, tel:"`.                                     |
 
 ---
 
 ### LOW — `head.html` injection (custom HTML head)
 
-| | |
-|---|---|
-| **File** | `src/extension.ts` (`customizePreviewHtmlHead`) |
-| **Risk** | The `customizePreviewHtmlHead` command opens `~/.crossnote/head.html` which is injected verbatim into webview HTML. A malicious `head.html` can run arbitrary scripts in the preview webview. |
-| **Status** | **NOT CHANGED** — This is by design (power user feature). Only trusted users should have write access to the global crossnote config path. The command is guarded with `enablement: "!isWeb"` so it does not run in browser mode. |
+|            |                                                                                                                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**   | `src/extension.ts` (previously `customizePreviewHtmlHead`)                                                                                                                                                                                                                         |
+| **Risk**   | The `~/.crossnote/head.html` file is injected verbatim into webview HTML. A malicious `head.html` can run arbitrary scripts in the preview webview.                                                                                                                                |
+| **Status** | **RESOLVED** — The `customizePreviewHtmlHead` command and all related global/workspace config file commands have been removed from the extension. The head.html file is still loaded by the crossnote library if it exists, but there is no longer a command to open or create it. |
 
 ---
 
@@ -108,14 +108,14 @@ No telemetry or usage-reporting code was found in the extension source. The upst
 
 ## 2. Risky Files Summary
 
-| File | Risk Level | Status |
-|---|---|---|
-| `src/config.ts` | HIGH | RESOLVED — `enableScriptExecution` forced false; kroki auto-assign removed; imageUploader removed |
-| `src/preview-provider.ts` | HIGH | PARTIALLY MITIGATED — `enableScripts: true` required by crossnote; message handlers intact but code-chunk commands removed |
-| `src/image-helper.ts` | HIGH | RESOLVED — file still exists but no commands reference it; all upload registrations removed |
-| `src/extension.ts` | MEDIUM | RESOLVED — `showUploadedImages` function and registrations removed |
-| `src/extension-common.ts` | MEDIUM | RESOLVED — `runCodeChunk`, `runAllCodeChunks`, `openImageHelper`, `setImageUploader`, upload commands all removed |
-| `crossnote/` (bundled) | MEDIUM | Significantly mitigated — `request` and `puppeteer-core` externalized from bundle; `yauzl` override applied; main DOMPurify is 3.3.3 (safe); only 5 residual production vulns remain (all in deprecated `request` library and `markdown-it-html5-embed`) |
+| File                      | Risk Level | Status                                                                                                                                                                                                                                                   |
+| ------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/config.ts`           | HIGH       | RESOLVED — `enableScriptExecution` forced false; kroki auto-assign removed; imageUploader removed                                                                                                                                                        |
+| `src/preview-provider.ts` | HIGH       | PARTIALLY MITIGATED — `enableScripts: true` required by crossnote; message handlers intact but code-chunk commands removed                                                                                                                               |
+| `src/image-helper.ts`     | HIGH       | RESOLVED — file still exists but no commands reference it; all upload registrations removed                                                                                                                                                              |
+| `src/extension.ts`        | MEDIUM     | RESOLVED — `showUploadedImages` and all global config commands (`customizeCss`, `openConfigScript`, `extendParser`, `customizePreviewHtmlHead`) removed                                                                                                  |
+| `src/extension-common.ts` | MEDIUM     | RESOLVED — `runCodeChunk`, `runAllCodeChunks`, `openImageHelper`, `setImageUploader`, upload commands removed; all non-essential user commands removed (17 commands stripped, only `openPreviewToTheSide` remains)                                       |
+| `crossnote/` (bundled)    | MEDIUM     | Significantly mitigated — `request` and `puppeteer-core` externalized from bundle; `yauzl` override applied; main DOMPurify is 3.3.3 (safe); only 5 residual production vulns remain (all in deprecated `request` library and `markdown-it-html5-embed`) |
 
 ---
 
@@ -133,30 +133,35 @@ No telemetry or usage-reporting code was found in the extension source. The upst
 10. `package.json`: Qiniu settings annotated with external-service warnings.
 11. `package.json`: Publisher changed from `shd101wyy` to `i2rd-internal`.
 12. `package.json`: Repository and bugs URLs changed to internal placeholders.
-14. `src/extension-common.ts`: Removed `openImageHelper`, `cacheCodeChunkResult`, `runCodeChunk`, `runAllCodeChunks`, `runAllCodeChunksCommand`, `runCodeChunkCommand`, `setImageUploader` functions.
-15. `src/extension-common.ts`: Removed registrations for `i2max-markdown-preview.openImageHelper`, `i2max-markdown-preview.runAllCodeChunks`, `i2max-markdown-preview.runCodeChunk`, `_crossnote.pasteImageFile`, `_crossnote.uploadImageFile`, `_crossnote.cacheCodeChunkResult`, `_crossnote.runCodeChunk`, `_crossnote.runAllCodeChunks`, `_crossnote.setImageUploader`.
-16. `src/extension-common.ts`: Removed import of `pasteImageFile`/`uploadImageFile` from `image-helper`.
-17. `src/extension.ts`: Removed `showUploadedImages` function and its two command registrations (`i2max-markdown-preview.showUploadedImages`, `_crossnote.showUploadedImageHistory`).
-18. `package.json`: Removed commands `openImageHelper`, `runAllCodeChunks`, `runCodeChunk`, `showUploadedImages`.
-19. `package.json`: Removed settings `imageUploader`, `imageFolderPath`, `qiniuAccessKey`, `qiniuSecretKey`, `qiniuBucket`, `qiniuDomain`.
-20. `package.json`: Removed `"browser"` entry (web extension mode disabled).
-21. `package.json`: Removed `atom://` from `protocolsWhiteList` default.
-22. `package.json`: Added `capabilities.untrustedWorkspaces` to block `enableScriptExecution` in untrusted workspaces.
-23. `build.js`: Added `proxy-agent` to esbuild `external` array (optional dep from updated `urllib` after `npm audit fix`).
-24. `npm audit fix` applied — 22 non-breaking vulnerabilities fixed.
-25. `build.js`: Added `puppeteer-core` and `request` to esbuild `external` array — excludes these vulnerable libraries from the bundled extension output. Any code path referencing them will fail gracefully at runtime. Bundle size reduced from 8.6MB to 6.4MB.
-26. `package.json`: Added `overrides` for `yauzl` (>=3.2.1) and `markdown-it-html5-embed > markdown-it` (attempted >=14, but incompatible with plugin API — remains at 8.4.2, lower risk since the main crossnote markdown-it is 14.1.1).
-27. DOMPurify audit: Main DOMPurify in `crossnote/webview/preview.js` is 3.3.3 (latest, safe). A secondary 3.0.5 version exists inside Monaco Editor's internal bundle — this is Monaco's own sanitizer, not exposed to user content rendering.
+13. `src/extension-common.ts`: Removed `openImageHelper`, `cacheCodeChunkResult`, `runCodeChunk`, `runAllCodeChunks`, `runAllCodeChunksCommand`, `runCodeChunkCommand`, `setImageUploader` functions.
+14. `src/extension-common.ts`: Removed registrations for `i2max-markdown-preview.openImageHelper`, `i2max-markdown-preview.runAllCodeChunks`, `i2max-markdown-preview.runCodeChunk`, `_crossnote.pasteImageFile`, `_crossnote.uploadImageFile`, `_crossnote.cacheCodeChunkResult`, `_crossnote.runCodeChunk`, `_crossnote.runAllCodeChunks`, `_crossnote.setImageUploader`.
+15. `src/extension-common.ts`: Removed import of `pasteImageFile`/`uploadImageFile` from `image-helper`.
+16. `src/extension.ts`: Removed `showUploadedImages` function and its two command registrations (`i2max-markdown-preview.showUploadedImages`, `_crossnote.showUploadedImageHistory`).
+17. `package.json`: Removed commands `openImageHelper`, `runAllCodeChunks`, `runCodeChunk`, `showUploadedImages`.
+18. `package.json`: Removed settings `imageUploader`, `imageFolderPath`, `qiniuAccessKey`, `qiniuSecretKey`, `qiniuBucket`, `qiniuDomain`.
+19. `package.json`: Removed `"browser"` entry (web extension mode disabled).
+20. `package.json`: Removed `atom://` from `protocolsWhiteList` default.
+21. `package.json`: Added `capabilities.untrustedWorkspaces` to block `enableScriptExecution` in untrusted workspaces.
+22. `build.js`: Added `proxy-agent` to esbuild `external` array (optional dep from updated `urllib` after `npm audit fix`).
+23. `npm audit fix` applied — 22 non-breaking vulnerabilities fixed.
+24. `build.js`: Added `puppeteer-core` and `request` to esbuild `external` array — excludes these vulnerable libraries from the bundled extension output. Any code path referencing them will fail gracefully at runtime. Bundle size reduced from 8.6MB to 6.4MB.
+25. `package.json`: Added `overrides` for `yauzl` (>=3.2.1) and `markdown-it-html5-embed > markdown-it` (attempted >=14, but incompatible with plugin API — remains at 8.4.2, lower risk since the main crossnote markdown-it is 14.1.1).
+26. DOMPurify audit: Main DOMPurify in `crossnote/webview/preview.js` is 3.3.3 (latest, safe). A secondary 3.0.5 version exists inside Monaco Editor's internal bundle — this is Monaco's own sanitizer, not exposed to user content rendering.
+27. `package.json` commands: Removed 17 commands; only `openPreviewToTheSide` remains.
+28. `package.json` keybindings: Removed 4 dead keybindings; only `openPreviewToTheSide` keybinding remains.
+29. `package.nls.json`: Removed 17 unused translation entries.
+30. `src/extension-common.ts`: Removed 14 user-facing command functions and their registrations (`openPreview`, `toggleScrollSync`, `toggleLiveUpdate`, `toggleBreakOnSingleNewLine`, `syncPreview`, `insertNewSlide`, `insertTable`, `insertPagebreak`, `createTOC`, `customizeCSSInWorkspace`, `openConfigScriptInWorkspace`, `extendParserInWorkspace`, `customizePreviewHtmlHeadInWorkspace`, `openConfigFileInWorkspace`). Removed unused `getCurrentWorkingDirectory` helper.
+31. `src/extension.ts`: Removed 4 global config commands (`customizeCSS`, `openConfigScript`, `extendParser`, `customizePreviewHtmlHead`) and unused imports.
 
 ---
 
 ## 4. Remaining Risks and Recommended Manual Actions
 
-| Priority | Action |
-|---|---|
-| MEDIUM | The `crossnote` npm package has 5 remaining production vulnerabilities: `form-data` (critical — unsafe random), `qs` (moderate — DoS), `tough-cookie` (moderate — prototype pollution), `markdown-it` 8.4.2 in `markdown-it-html5-embed` (moderate — ReDoS). All are in the deprecated `request` HTTP library or incompatible plugin sub-dependencies. The `request` and `puppeteer-core` libraries are **externalized** from the bundle (not shipped), so form-data/qs/tough-cookie code never executes. The remaining `markdown-it` 8.4.2 is only used internally by the HTML5 embed plugin, not the main render path. |
-| MEDIUM | The webview still uses `enableScripts: true` (required by crossnote). Audit the `onMessage` handler in `src/preview-provider.ts` to ensure no commands can be triggered by crafted document content. |
-| MEDIUM | DOMPurify 3.0.5 (vulnerable to XSS) is embedded inside the Monaco Editor bundle in `crossnote/webview/preview.js`. This is Monaco's internal sanitizer, not used for user content rendering. The main DOMPurify 3.3.3 (safe) handles HTML sanitization. Low exploitation risk but cannot be patched without rebuilding Monaco. |
-| LOW | If pandoc export will never be used, remove `_crossnote.pandocExport` registration from `extension-common.ts` and the `pandocExport` method calls. |
-| LOW | `src/image-helper.ts` still exists in the source tree — it is no longer called but can be deleted for clarity. |
-| LOW | 21 dev-only vulnerabilities remain in `gulp`, `mocha`, and `@typescript-eslint` — these are build/test tools and do NOT ship in the .vsix package. |
+| Priority | Action                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| MEDIUM   | The `crossnote` npm package has 5 remaining production vulnerabilities: `form-data` (critical — unsafe random), `qs` (moderate — DoS), `tough-cookie` (moderate — prototype pollution), `markdown-it` 8.4.2 in `markdown-it-html5-embed` (moderate — ReDoS). All are in the deprecated `request` HTTP library or incompatible plugin sub-dependencies. The `request` and `puppeteer-core` libraries are **externalized** from the bundle (not shipped), so form-data/qs/tough-cookie code never executes. The remaining `markdown-it` 8.4.2 is only used internally by the HTML5 embed plugin, not the main render path. |
+| MEDIUM   | The webview still uses `enableScripts: true` (required by crossnote). Audit the `onMessage` handler in `src/preview-provider.ts` to ensure no commands can be triggered by crafted document content.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| MEDIUM   | DOMPurify 3.0.5 (vulnerable to XSS) is embedded inside the Monaco Editor bundle in `crossnote/webview/preview.js`. This is Monaco's internal sanitizer, not used for user content rendering. The main DOMPurify 3.3.3 (safe) handles HTML sanitization. Low exploitation risk but cannot be patched without rebuilding Monaco.                                                                                                                                                                                                                                                                                           |
+| LOW      | If pandoc export will never be used, remove `_crossnote.pandocExport` registration from `extension-common.ts` and the `pandocExport` method calls.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| LOW      | `src/image-helper.ts` still exists in the source tree — it is no longer called but can be deleted for clarity.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| LOW      | 21 dev-only vulnerabilities remain in `gulp`, `mocha`, and `@typescript-eslint` — these are build/test tools and do NOT ship in the .vsix package.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |

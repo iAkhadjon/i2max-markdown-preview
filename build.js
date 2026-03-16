@@ -41,7 +41,7 @@ const nativeConfig = {
   outfile: './out/native/extension.js',
   target: 'node16',
   format: 'cjs',
-  external: ['vscode', 'proxy-agent', 'puppeteer-core', 'request'],
+  external: ['vscode', 'proxy-agent', 'puppeteer-core'],
 };
 
 // FIX:
@@ -74,7 +74,7 @@ const webConfig = {
   outfile: './out/web/extension.js',
   target: 'es2020',
   format: 'cjs',
-  external: ['vscode', 'proxy-agent', 'puppeteer-core', 'request'],
+  external: ['vscode', 'proxy-agent', 'puppeteer-core'],
   plugins: [
     polyfillNode({
       polyfills: {

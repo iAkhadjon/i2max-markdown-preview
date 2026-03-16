@@ -6,3 +6,16 @@ out
 mume
 .vscode-test-web
 yarn-error.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log

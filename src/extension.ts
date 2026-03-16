@@ -1,10 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { utility } from 'crossnote';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { initExtensionCommon } from './extension-common';
+import { MarkdownImageDropProvider } from './image-drop-provider';
 import { PreviewProvider } from './preview-provider';
 import { globalConfigPath } from './utils';
 
@@ -19,9 +18,7 @@ export async function activate(context: vscode.ExtensionContext) {
     fs.watch(globalConfigPath, async (eventType, fileName) => {
       if (
         eventType === 'change' &&
-        ['style.less', 'config.js', 'parser.js', 'head.html'].includes(
-          fileName ?? '',
-        )
+        ['style.less', 'config.js', 'parser.js', 'head.html'].includes(fileName ?? '')
       ) {
         PreviewProvider.notebooksManager?.updateAllNotebooksConfig();
       }
@@ -30,75 +27,22 @@ export async function activate(context: vscode.ExtensionContext) {
     console.error(error);
   }
 
-  // Init the extension-common module
-  await initExtensionCommon(context);
-
-  function customizeCSS() {
-    const globalStyleLessFile = utility.addFileProtocol(
-      path.resolve(globalConfigPath, './style.less'),
-    );
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(globalStyleLessFile),
-    );
+  try {
+    // Init the extension-common module
+    await initExtensionCommon(context);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('i2max-markdown-preview activation failed:', msg);
+    vscode.window.showErrorMessage(`i2max Markdown Preview failed to activate: ${msg}`);
+    return;
   }
 
-  function openConfigScript() {
-    const configScriptPath = utility.addFileProtocol(
-      path.resolve(globalConfigPath, './config.js'),
-    );
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(configScriptPath),
-    );
-  }
-
-  function extendParser() {
-    const parserConfigPath = utility.addFileProtocol(
-      path.resolve(globalConfigPath, './parser.js'),
-    );
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(parserConfigPath),
-    );
-  }
-
-  function customizePreviewHtmlHead() {
-    const headHtmlPath = utility.addFileProtocol(
-      path.resolve(globalConfigPath, './head.html'),
-    );
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(headHtmlPath),
-    );
-  }
-
+  // Register drag-and-drop image provider for markdown files
+  const markdownSelector: vscode.DocumentSelector = { language: 'markdown' };
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'i2max-markdown-preview.customizeCss',
-      customizeCSS,
+    vscode.languages.registerDocumentDropEditProvider(
+      markdownSelector,
+      new MarkdownImageDropProvider(),
     ),
   );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'i2max-markdown-preview.openConfigScript',
-      openConfigScript,
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'i2max-markdown-preview.extendParser',
-      extendParser,
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'i2max-markdown-preview.customizePreviewHtmlHead',
-      customizePreviewHtmlHead,
-    ),
-  );
-
 }

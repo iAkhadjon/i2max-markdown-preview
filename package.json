@@ -1,7 +1,7 @@
 {
   "name": "i2max-markdown-preview",
   "displayName": "%displayName%",
-  "version": "0.8.20",
+  "version": "1.0.0",
   "description": "%description%",
   "categories": [
     "Other"
@@ -15,10 +15,7 @@
   "repository": "https://internal.example.com/i2max-markdown-preview",
   "license": "NCSA",
   "contributors": [
-    "shd101wyy",
-    "kachkaev",
-    "gabyx",
-    "mavaddat"
+    "Park Shin"
   ],
   "publisher": "i2rd-internal",
   "main": "./out/native/extension.js",
@@ -35,6 +32,7 @@
     "run-in-vscode-dev": "npx serve --cors -l 5000 --ssl-cert $HOME/certs/localhost.pem --ssl-key $HOME/certs/localhost-key.pem",
     "test": "npm run build && node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "npm install && npm run build",
+    "package": "npx vsce package --no-dependencies --allow-missing-repository --baseContentUrl https://internal.example.com/i2max-markdown-preview --baseImagesUrl https://internal.example.com/i2max-markdown-preview",
     "watch": "gulp copy-files && gulp clean-out && node build.js --watch"
   },
   "contributes": {
@@ -47,84 +45,6 @@
           "light": "./media/preview-right-light.svg",
           "dark": "./media/preview-right-dark.svg"
         }
-      },
-      {
-        "command": "i2max-markdown-preview.openPreview",
-        "title": "%i2max-markdown-preview.openPreview.title%",
-        "category": "Markdown",
-        "icon": {
-          "light": "./media/preview-right-light.svg",
-          "dark": "./media/preview-right-dark.svg"
-        }
-      },
-      {
-        "command": "i2max-markdown-preview.toggleScrollSync",
-        "title": "%i2max-markdown-preview.toggleScrollSync.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.toggleLiveUpdate",
-        "title": "%i2max-markdown-preview.toggleLiveUpdate.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.toggleBreakOnSingleNewLine",
-        "title": "%i2max-markdown-preview.toggleBreakOnSingleNewLine.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.syncPreview",
-        "title": "%i2max-markdown-preview.syncPreview.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.customizeCss",
-        "title": "%i2max-markdown-preview.customizeCss.title%",
-        "enablement": "!isWeb"
-      },
-      {
-        "command": "i2max-markdown-preview.customizeCssInWorkspace",
-        "title": "%i2max-markdown-preview.customizeCssInWorkspace.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.insertNewSlide",
-        "title": "%i2max-markdown-preview.insertNewSlide.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.insertTable",
-        "title": "%i2max-markdown-preview.insertTable.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.insertPagebreak",
-        "title": "%i2max-markdown-preview.insertPagebreak.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.createTOC",
-        "title": "%i2max-markdown-preview.createTOC.title%",
-        "enablement": "!isWeb"
-      },
-      {
-        "command": "i2max-markdown-preview.openConfigScript",
-        "title": "%i2max-markdown-preview.openConfigScript.title%",
-        "enablement": "!isWeb"
-      },
-      {
-        "command": "i2max-markdown-preview.extendParser",
-        "title": "%i2max-markdown-preview.extendParser.title%",
-        "enablement": "!isWeb"
-      },
-      {
-        "command": "i2max-markdown-preview.customizePreviewHtmlHead",
-        "title": "%i2max-markdown-preview.customizePreviewHtmlHead.title%",
-        "enablement": "!isWeb"
-      },
-      {
-        "command": "i2max-markdown-preview.openConfigScriptInWorkspace",
-        "title": "%i2max-markdown-preview.openConfigScriptInWorkspace.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.extendParserInWorkspace",
-        "title": "%i2max-markdown-preview.extendParserInWorkspace.title%"
-      },
-      {
-        "command": "i2max-markdown-preview.customizePreviewHtmlHeadInWorkspace",
-        "title": "%i2max-markdown-preview.customizePreviewHtmlHeadInWorkspace.title%"
       }
     ],
     "configuration": {
@@ -592,27 +512,6 @@
         "command": "i2max-markdown-preview.openPreviewToTheSide",
         "key": "ctrl+k v",
         "mac": "cmd+k v",
-        "when": "editorLangId == markdown"
-      },
-      {
-        "command": "i2max-markdown-preview.openPreview",
-        "key": "ctrl+shift+v",
-        "mac": "cmd+shift+v",
-        "when": "editorLangId == markdown"
-      },
-      {
-        "command": "i2max-markdown-preview.runAllCodeChunks",
-        "key": "ctrl+shift+enter",
-        "when": "editorLangId == markdown"
-      },
-      {
-        "command": "i2max-markdown-preview.runCodeChunk",
-        "key": "shift+enter",
-        "when": "editorLangId == markdown"
-      },
-      {
-        "command": "i2max-markdown-preview.syncPreview",
-        "key": "ctrl+shift+s",
         "when": "editorLangId == markdown"
       }
     ],
