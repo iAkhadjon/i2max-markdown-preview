@@ -9,9 +9,9 @@ Forked from [Markdown Preview Enhanced](https://github.com/shd101wyy/vscode-mark
 
 Open any `.md` file, then:
 
-| Shortcut                                                         | Action                   |
-| ---------------------------------------------------------------- | ------------------------ |
-| <kbd>Cmd+K V</kbd> (macOS) / <kbd>Ctrl+K V</kbd> (Windows/Linux) | Open Preview to the Side |
+| Shortcut                                                                            | Action                   |
+| ----------------------------------------------------------------------------------- | ------------------------ |
+| <kbd>Cmd+Shift+Option+M</kbd> (macOS) / <kbd>Ctrl+Shift+Alt+M</kbd> (Windows/Linux) | Open Preview to the Side |
 
 Or right-click in the editor → **i2max Markdown Preview: Open Preview to the Side**.
 

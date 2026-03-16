@@ -90,9 +90,9 @@ npm run package
 
 The extension provides a single command:
 
-| Shortcut                                                         | Command                                              |
-| ---------------------------------------------------------------- | ---------------------------------------------------- |
-| <kbd>Cmd+K V</kbd> (macOS) / <kbd>Ctrl+K V</kbd> (Windows/Linux) | **i2max Markdown Preview: Open Preview to the Side** |
+| Shortcut                                                                            | Command                                              |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| <kbd>Cmd+Shift+Option+M</kbd> (macOS) / <kbd>Ctrl+Shift+Alt+M</kbd> (Windows/Linux) | **i2max Markdown Preview: Open Preview to the Side** |
 
 You can also right-click in a Markdown file → **i2max Markdown Preview: Open Preview to the Side**, or use the icon in the editor title bar.
 

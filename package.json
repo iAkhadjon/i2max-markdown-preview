@@ -510,8 +510,8 @@
     "keybindings": [
       {
         "command": "i2max-markdown-preview.openPreviewToTheSide",
-        "key": "ctrl+k v",
-        "mac": "cmd+k v",
+        "key": "ctrl+shift+alt+m",
+        "mac": "cmd+shift+alt+m",
         "when": "editorLangId == markdown"
       }
     ],
