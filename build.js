@@ -16,9 +16,9 @@ const esbuildProblemMatcherPlugin = {
       execSync('gulp copy-files');
       console.log('[watch] gulp copy-files');
     });
-    build.onEnd((result) => {
+    build.onEnd(result => {
       if (result.errors.length) {
-        result.errors.forEach((error) =>
+        result.errors.forEach(error =>
           console.error(
             `> ${error.location?.file}:${error.location?.line}:${error.location?.column}: error: ${error.text}`,
           ),
@@ -90,7 +90,7 @@ const webConfig = {
     // window: 'globalThis',
     // global: 'globalThis',
     // window: "globalThis",
-    'window': JSON.stringify(defaultWindow),
+    window: JSON.stringify(defaultWindow),
     // document: JSON.stringify(defaultDocument),
     'process.env.IS_VSCODE_WEB_EXTENSION': '"true"',
   },
